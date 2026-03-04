@@ -6,10 +6,12 @@ TEST:
   DATA:
     FS: 30
     DATASET: UBFC-rPPG
-    DO_PREPROCESS: False                    # if first time, should be true
+    DO_PREPROCESS: True                    # if first time, should be true, False에서 Ture로 변경(딥러닝 모델 전처리는 TRUE로 바꿔야함)
     DATA_FORMAT: NDCHW
-    DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/UBFC-rPPG/RawData"                     # Raw dataset path, need to be updated
-    CACHED_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/rppg_toolbox/PreprocessedData"    # Processed dataset save path, need to be updated
+    # DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/UBFC-rPPG/RawData"                     # Raw dataset path, need to be updated
+    DATA_PATH: "./data/UBFC-rPPG"            # 수정한 파일 경로
+    # CACHED_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/rppg_toolbox/PreprocessedData"    # Processed dataset save path, need to be updated
+    CACHED_PATH: "./PreprocessedData"        # 수정한 파일 경로
     EXP_DATA_NAME: ""
     BEGIN: 0.0
     END: 1.0

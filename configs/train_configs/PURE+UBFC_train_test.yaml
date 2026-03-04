@@ -1,0 +1,159 @@
+BASE: ['']
+#TOOLBOX_MODE: "train_and_test" #학습 + 평각까지 이루어짐
+TOOLBOX_MODE: "only_test"            #학습만 하는 경우
+
+TRAIN:
+  BATCH_SIZE: 4
+  EPOCHS: 30
+  LR: 9e-3
+  MODEL_FILE_NAME: UBFC_PURE_tscan_hybrid
+  PLOT_LOSSES_AND_LR: True
+
+  DATA:
+    # 주의: UBFC는 subject별 원본 fps를 로더가 읽어야 함.
+    # 아래 FS=30은 "fallback" 용도만.
+    FS: 30
+
+    # 여기 이름이 "커스텀 로더 매핑 이름"과 정확히 같아야 함
+    # 예: registry에서 "UBFC_PURE" -> UBFC_PURE_Loader 로 연결
+    DATASET: UBFC-PURE
+
+    DO_PREPROCESS: True   # 처음에만 전처리 할 때 "True", 캐시 만들어지면 False로 바꾸자
+    DATA_FORMAT: NDCHW
+
+    # 하이브리드 루트 (data_path 바로 아래에 subject* 와 *-* 가 직접 존재해야 함)
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
+
+    # UBFC 원본 vid.avi 루트 (fps 읽기 전용)
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
+
+    # 전처리 캐시 저장 경로 (TRAIN/VALID/TEST 통일 권장)
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_TSCAN"
+
+    EXP_DATA_NAME: ""
+    BEGIN: 0.0
+    END: 0.8
+
+    PREPROCESS:
+      DATA_TYPE: ['DiffNormalized','Standardized']
+      DATA_AUG: ['None']
+      LABEL_TYPE: DiffNormalized
+
+      DO_CHUNK: True
+      # CHUNK_LENGTH는 학습/ 검증 샘플을 몇 프레임 단위로 자를지 정하는 값
+      # PURE/UBFC 는 30Hz이기 때문에 180프레임으로 하면 6초(약30fs x 6s) 시그널 완성, 널리 쓰이는 심박 주기 3~4초 보다 넉넉한 길이로 모델이 안정적임
+      # 더 짧은 실시간 추론을 원하면 CHUNK_LENGTH를 줄이면 됨
+      CHUNK_LENGTH: 180
+
+      CROP_FACE:
+        DO_CROP_FACE: True
+        BACKEND: 'HC'
+        USE_LARGE_FACE_BOX: True
+        LARGE_BOX_COEF: 1.5
+        DETECTION:
+          DO_DYNAMIC_DETECTION: False
+          DYNAMIC_DETECTION_FREQUENCY: 30
+          USE_MEDIAN_FACE_BOX: False
+
+      RESIZE:
+        H: 72
+        W: 72
+
+VALID:
+  DATA:
+    FS: 30
+    DATASET: UBFC-PURE
+    DO_PREPROCESS: True
+    DATA_FORMAT: NDCHW
+
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_TSCAN"
+
+    EXP_DATA_NAME: ""
+    BEGIN: 0.8
+    END: 1.0
+
+    PREPROCESS:
+      DATA_TYPE: ['DiffNormalized','Standardized']
+      DATA_AUG: ['None']
+      LABEL_TYPE: DiffNormalized
+
+      DO_CHUNK: True
+      CHUNK_LENGTH: 180
+
+      CROP_FACE:
+        DO_CROP_FACE: True
+        BACKEND: 'HC'
+        USE_LARGE_FACE_BOX: True
+        LARGE_BOX_COEF: 1.5
+        DETECTION:
+          DO_DYNAMIC_DETECTION: False
+          DYNAMIC_DETECTION_FREQUENCY: 30
+          USE_MEDIAN_FACE_BOX: False
+
+      RESIZE:
+        H: 72
+        W: 72
+
+TEST:
+  METRICS: ['MAE', 'RMSE', 'MAPE', 'Pearson', 'SNR', 'BA']
+  USE_LAST_EPOCH: False # Flase로 변경, 이미 학습은 진행함
+
+  DATA:
+    FS: 30
+    DATASET: UBFC-PURE
+    DO_PREPROCESS: True          # 처음이면 True 권장 (캐시 있으면 False로 바꿔도 됨)
+    DATA_FORMAT: NDCHW
+
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_TSCAN"
+
+    EXP_DATA_NAME: ""
+    BEGIN: 0.0
+    END: 1.0
+
+    PREPROCESS:
+      # 라벨 신호를 차분한 후 표준편차로 나눠 정규화하는 방식
+      DATA_TYPE: ['DiffNormalized','Standardized']
+      DATA_AUG: ['None']
+      LABEL_TYPE: DiffNormalized 
+
+      DO_CHUNK: True
+      CHUNK_LENGTH: 180
+
+      CROP_FACE:
+        # "HC"는 Haar Cascade, "Y5F"는 YOLO5Face. 얼굴 인식이 잘 안되면 YOLO5Face로 바꾸기
+        DO_CROP_FACE: True
+        BACKEND: 'Y5F'
+        USE_LARGE_FACE_BOX: True
+        LARGE_BOX_COEF: 1.5
+        DETECTION:
+          DO_DYNAMIC_DETECTION: False
+          DYNAMIC_DETECTION_FREQUENCY: 30
+          USE_MEDIAN_FACE_BOX: False
+
+      RESIZE:
+        H: 72
+        W: 72
+
+DEVICE: cuda:0
+NUM_OF_GPU_TRAIN: 1
+
+LOG:
+  PATH: runs/exp
+
+MODEL:
+  DROP_RATE: 0.2
+  NAME: Tscan           #정확도가 높은 계열: DeepPhys, TSCAN, PhysFormer 등의 모델을 선택
+  TSCAN:
+    FRAME_DEPTH: 10
+
+INFERENCE:
+  BATCH_SIZE: 1 # 4에서 1로 변경
+  EVALUATION_METHOD: "FFT"
+  EVALUATION_WINDOW:
+    USE_SMALLER_WINDOW: False
+    WINDOW_SIZE: 10
+  MODEL_PATH: "home/jeonga/rPPG-Toolbox/runs/exp/UBFC-PURE_SizeW72_SizeH72_ClipLength180_DataTypeDiffNormalized_Standardized_DataAugNone_LabelTypeDiffNormalized_Crop_faceTrue_BackendHC_Large_boxTrue_Large_size1.5_Dyamic_DetFalse_det_len30_Median_face_boxFalse/PreTrainedModels/UBFC_PURE_tscan_hybrid_Epoch29.pth"

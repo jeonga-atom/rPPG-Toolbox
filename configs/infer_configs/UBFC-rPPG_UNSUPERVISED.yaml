@@ -6,10 +6,12 @@ UNSUPERVISED:
   DATA:
     FS: 30
     DATASET: UBFC-rPPG
-    DO_PREPROCESS: False               # if first time, should be true
+    DO_PREPROCESS: True               # if first time, should be true, True로 수정 함
     DATA_FORMAT: NDHWC
-    DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/UBFC-rPPG/RawData"                     # Raw dataset path, need to be updated
-    CACHED_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/rppg_toolbox/PreprocessedData"    # Processed dataset save path, need to be updated
+    # DATA_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/UBFC-rPPG/RawData"                      # Raw dataset path, need to be updated
+    DATA_PATH: "./data/UBFC-rPPG"       # 수정한 파일 경로
+    # CACHED_PATH: "/gscratch/ubicomp/xliu0/data3/mnt/Datasets/rppg_toolbox/PreprocessedData"    # Processed dataset save path, need to be updated
+    CACHED_PATH: "./PreprocessedData_2"   # 수정한 파일 경로
     EXP_DATA_NAME: ""
     BEGIN: 0.0
     END: 1.0
@@ -21,9 +23,9 @@ UNSUPERVISED:
       CHUNK_LENGTH: 180
       CROP_FACE:
         DO_CROP_FACE: True
-        BACKEND: 'HC'    # HC for Haar Cascade, Y5F for YOLO5Face
+        BACKEND: 'Y5F'    # HC for Haar Cascade, Y5F for YOLO5Face, 얼굴 인식이 잘 안되면 YOLO5Face로 바꾸기
         USE_LARGE_FACE_BOX: True
-        LARGE_BOX_COEF: 1.5
+        LARGE_BOX_COEF: 1.5   # 얼굴의 주변을 얼마나 넓게 잡을지를 결정, 인식하는 사람의 움직임이 클 것으로 예상되면 2.0정도로 넓게 잡자
         DETECTION:
           DO_DYNAMIC_DETECTION: False
           DYNAMIC_DETECTION_FREQUENCY : 30
@@ -33,6 +35,7 @@ UNSUPERVISED:
         W: 72
 INFERENCE:
   EVALUATION_METHOD: "FFT"        # "FFT" or "peak detection"
-  EVALUATION_WINDOW:
-    USE_SMALLER_WINDOW: False        # Change this if you'd like an evaluation window smaller than the test video length
-    WINDOW_SIZE: 10        # In seconds
+  EVALUATION_WINDOW:              
+    USE_SMALLER_WINDOW: False       # Change this if you'd like an evaluation window smaller than the test video length
+                                    # 영상을 실시간성으로 인식하게 하기 위해서는 True로 바꾸자 
+    WINDOW_SIZE: 10        # In seconds, 10초 단위의 심박수 변화

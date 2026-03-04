@@ -221,7 +221,7 @@ class BaseLoader(Dataset):
         self.load_preprocessed_data()  # load all data and corresponding labels (sorted for consistency)
         print("Total Number of raw files preprocessed:", len(data_dirs_split), end='\n\n')
 
-    def preprocess(self, frames, bvps, config_preprocess):
+    def preprocess(self, frames, bvps, config_preprocess, fs=None):
         """Preprocesses a pair of data.
 
         Args:
@@ -266,9 +266,17 @@ class BaseLoader(Dataset):
         else:
             raise ValueError("Unsupported label type!")
 
+        chunk_length = config_preprocess.CHUNK_LENGTH
+        chunk_length_seconds = getattr(config_preprocess, 'CHUNK_LENGTH_SEC', 0.0)
+        if chunk_length_seconds and fs and fs > 0:
+            chunk_length_seconds = float(chunk_length_seconds)
+            frames_per_window = int(round(chunk_length_seconds * fs))
+            if frames_per_window > 0:
+                chunk_length = frames_per_window
+        chunk_length = max(1, chunk_length)
         if config_preprocess.DO_CHUNK:  # chunk data into snippets
             frames_clips, bvps_clips = self.chunk(
-                data, bvps, config_preprocess.CHUNK_LENGTH)
+                data, bvps, chunk_length)
         else:
             frames_clips = np.array([data])
             bvps_clips = np.array([bvps])

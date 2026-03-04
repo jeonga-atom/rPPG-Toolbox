@@ -19,3 +19,20 @@ neural_methods/trainer/PhysnetTrainer_backup.py
 debug_utils_physnet.py
 test.yaml
 *.out
+
+# --- datasets / preprocessing / logs ---
+data/
+PreprocessedData*/
+log/
+runs/
+
+# --- videos & large files ---
+**/*.avi
+**/*.mp4
+**/*.mkv
+**/*.zip
+**/*.tar
+**/*.tar.gz
+**/*.pth
+**/*.pt
+**/*.ckpt
