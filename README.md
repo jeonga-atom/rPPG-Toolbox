@@ -1,3 +1,13 @@
+# github에 push하지 않은 폴더 (따로 추가하지 않아도 됨)
+/home/jung/rPPG-Toolbox/
+├── data/
+└── PreprocessedData*/
+└── log/
+└── runs/
+
+--
+
+
 # rPPG Hybrid Training & Real-time Estimation
 
 Forked from ubicomplab/rPPG-Toolbox.
