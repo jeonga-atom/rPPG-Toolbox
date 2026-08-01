@@ -21,7 +21,7 @@ TRAIN:
   BATCH_SIZE: 4
   EPOCHS: 20    # 기본 30에서 40으로 증가
   LR: 1e-4
-  MODEL_FILE_NAME: UBFC_PURE_PhysNet_y5f
+  MODEL_FILE_NAME: UBFC_PURE_VIPL_PhysNet_y5f
   PLOT_LOSSES_AND_LR: True
 
   DATA:
@@ -31,19 +31,19 @@ TRAIN:
 
     # 여기 이름이 "커스텀 로더 매핑 이름"과 정확히 같아야 함
     # 예: registry에서 "UBFC_PURE" -> UBFC_PURE_Loader 로 연결
-    DATASET: UBFC-PURE
+    DATASET: UBFC-PURE-VIPL
 
     DO_PREPROCESS: True   # 처음에만 전처리 할 때 "True", 캐시 만들어지면 False로 바꾸자
     DATA_FORMAT: NDCHW
 
     # 하이브리드 루트 (data_path 바로 아래에 subject* 와 *-* 가 직접 존재해야 함)
-    DATA_PATH: "/home/pfcheon/rPPG_MIX"
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
 
     # UBFC 원본 vid.avi 루트 (fps 읽기 전용)
-    UBFC_ORIG_PATH: "/home/pfcheon/rPPG-Toolbox/data/UBFC-rPPG"
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
 
     # 전처리 캐시 저장 경로 (TRAIN/VALID/TEST 통일 권장)
-    CACHED_PATH: "/home/pfcheon/rPPG_MIX/Preprocessed/UBFC_PURE_PhysNet_v10"
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_VIPL_PhysNet_v1"
 
     EXP_DATA_NAME: ""
     BEGIN: 0.0
@@ -77,13 +77,13 @@ TRAIN:
 VALID:
   DATA:
     FS: 30
-    DATASET: UBFC-PURE
+    DATASET: UBFC-PURE-VIPL
     DO_PREPROCESS: True
     DATA_FORMAT: NDCHW
 
-    DATA_PATH: "/home/pfcheon/rPPG_MIX"
-    UBFC_ORIG_PATH: "/home/pfcheon/rPPG-Toolbox/data/UBFC-rPPG"
-    CACHED_PATH: "/home/pfcheon/rPPG_MIX/Preprocessed/UBFC_PURE_PhysNet_v10"
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_VIPL_PhysNet_v1"
 
     EXP_DATA_NAME: ""
     BEGIN: 0.7
@@ -117,13 +117,13 @@ TEST:
 
   DATA:
     FS: 30
-    DATASET: UBFC-PURE
+    DATASET: UBFC-PURE-VIPL
     DO_PREPROCESS: True          # 처음이면 True 권장 (캐시 있으면 False로 바꿔도 됨)
     DATA_FORMAT: NDCHW
 
-    DATA_PATH: "/home/pfcheon/rPPG_MIX"
-    UBFC_ORIG_PATH: "/home/pfcheon/rPPG-Toolbox/data/UBFC-rPPG"
-    CACHED_PATH: "/home/pfcheon/rPPG_MIX/Preprocessed/UBFC_PURE_PhysNet_v10"
+    DATA_PATH: "/home/jeonga/rPPG_MIX"
+    UBFC_ORIG_PATH: "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"
+    CACHED_PATH: "/home/jeonga/rPPG_MIX/Preprocessed/UBFC_PURE_VIPL_PhysNet_v1"
 
     EXP_DATA_NAME: ""
     BEGIN: 0.85

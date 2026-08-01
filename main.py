@@ -168,7 +168,7 @@ if __name__ == "__main__":
             train_loader = data_loader.BP4DPlusBigSmallLoader.BP4DPlusBigSmallLoader
         elif config.TRAIN.DATA.DATASET == "UBFC-PHYS":
             train_loader = data_loader.UBFCPHYSLoader.UBFCPHYSLoader
-        elif config.TRAIN.DATA.DATASET == "UBFC-PURE":
+        elif config.TRAIN.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             train_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         elif config.TRAIN.DATA.DATASET == "iBVP":
             train_loader = data_loader.iBVPLoader.iBVPLoader
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             train_loader = data_loader.LADHLoader.LADHLoader
         elif config.TRAIN.DATA.DATASET == "SUMS":
             train_loader = data_loader.SUMSLoader.SUMSLoader
-        elif config.TRAIN.DATA.DATASET == "UBFC-PURE":
+        elif config.TRAIN.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             train_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         else:
             raise ValueError("Unsupported dataset! Currently supporting UBFC-rPPG, PURE, MMPD, \
@@ -219,7 +219,7 @@ if __name__ == "__main__":
             valid_loader = data_loader.BP4DPlusBigSmallLoader.BP4DPlusBigSmallLoader
         elif config.VALID.DATA.DATASET == "UBFC-PHYS":
             valid_loader = data_loader.UBFCPHYSLoader.UBFCPHYSLoader
-        elif config.VALID.DATA.DATASET == "UBFC-PURE":
+        elif config.VALID.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             valid_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         elif config.VALID.DATA.DATASET == "iBVP":
             valid_loader = data_loader.iBVPLoader.iBVPLoader
@@ -229,7 +229,7 @@ if __name__ == "__main__":
             valid_loader = data_loader.LADHLoader.LADHLoader
         elif config.VALID.DATA.DATASET == "SUMS":
             valid_loader = data_loader.SUMSLoader.SUMSLoader
-        elif config.VALID.DATA.DATASET == "UBFC-PURE":
+        elif config.VALID.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             valid_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         elif config.VALID.DATA.DATASET is None and not config.TEST.USE_LAST_EPOCH:
             raise ValueError("Validation dataset not specified despite USE_LAST_EPOCH set to False!")
@@ -272,7 +272,7 @@ if __name__ == "__main__":
             test_loader = data_loader.BP4DPlusBigSmallLoader.BP4DPlusBigSmallLoader
         elif config.TEST.DATA.DATASET == "UBFC-PHYS":
             test_loader = data_loader.UBFCPHYSLoader.UBFCPHYSLoader
-        elif config.TEST.DATA.DATASET == "UBFC-PURE":
+        elif config.TEST.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             test_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         elif config.TEST.DATA.DATASET == "iBVP":
             test_loader = data_loader.iBVPLoader.iBVPLoader
@@ -282,7 +282,7 @@ if __name__ == "__main__":
             test_loader = data_loader.LADHLoader.LADHLoader
         elif config.TEST.DATA.DATASET == "SUMS":
             test_loader = data_loader.SUMSLoader.SUMSLoader
-        elif config.TEST.DATA.DATASET == "UBFC-PURE":
+        elif config.TEST.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             test_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         else:
             raise ValueError("Unsupported dataset! Currently supporting UBFC-rPPG, PURE, MMPD, \
@@ -324,11 +324,11 @@ if __name__ == "__main__":
             unsupervised_loader = data_loader.BP4DPlusLoader.BP4DPlusLoader
         elif config.UNSUPERVISED.DATA.DATASET == "UBFC-PHYS":
             unsupervised_loader = data_loader.UBFCPHYSLoader.UBFCPHYSLoader
-        elif config.UNSUPERVISED.DATA.DATASET == "UBFC-PURE":
+        elif config.UNSUPERVISED.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             unsupervised_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         elif config.UNSUPERVISED.DATA.DATASET == "iBVP":
             unsupervised_loader = data_loader.iBVPLoader.iBVPLoader
-        elif config.UNSUPERVISED.DATA.DATASET == "UBFC-PURE":
+        elif config.UNSUPERVISED.DATA.DATASET in ["UBFC-PURE", "UBFC-PURE-VIPL"]:
             unsupervised_loader = data_loader.UBFC_PURE_Loader.UBFC_PURE_Loader
         else:
             raise ValueError("Unsupported dataset! Currently supporting UBFC-rPPG, PURE, MMPD, \
