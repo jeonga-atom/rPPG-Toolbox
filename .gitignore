@@ -36,3 +36,10 @@ runs/
 **/*.pth
 **/*.pt
 **/*.ckpt
+
+# --- local temporary files ---
+.codex
+copy_rppg.py
+WARNING*
+2026.3.19-h06a4308_0
+3.5.5-h1b28b03_0
