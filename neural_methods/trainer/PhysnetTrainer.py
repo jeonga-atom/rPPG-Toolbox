@@ -62,8 +62,14 @@ class PhysnetTrainer(BaseTrainer):
             tbar = tqdm(data_loader["train"], ncols=80)
             for idx, batch in enumerate(tbar):
                 tbar.set_description("Train epoch %s" % epoch)
-                rPPG, x_visual, x_visual3232, x_visual1616 = self.model(
-                    batch[0].to(torch.float32).to(self.device))
+                data = batch[0].to(torch.float32).to(self.device)
+
+                # [B, T, C, H, W] -> [B, C, T, H, W]
+                if data.shape[1] != 3 and data.shape[2] == 3:
+                    data = data.permute(0, 2, 1, 3, 4)
+
+                rPPG, x_visual, x_visual3232, x_visual1616 = self.model(data)
+
                 BVP_label = batch[1].to(
                     torch.float32).to(self.device)
                 rPPG = (rPPG - torch.mean(rPPG)) / torch.std(rPPG)  # normalize
@@ -124,8 +130,13 @@ class PhysnetTrainer(BaseTrainer):
                 vbar.set_description("Validation")
                 BVP_label = valid_batch[1].to(
                     torch.float32).to(self.device)
-                rPPG, x_visual, x_visual3232, x_visual1616 = self.model(
-                    valid_batch[0].to(torch.float32).to(self.device))
+                data = valid_batch[0].to(torch.float32).to(self.device)
+
+                if data.shape[1] != 3 and data.shape[2] == 3:
+                    data = data.permute(0, 2, 1, 3, 4)
+
+                rPPG, x_visual, x_visual3232, x_visual1616 = self.model(data)
+
                 rPPG = (rPPG - torch.mean(rPPG)) / torch.std(rPPG)  # normalize
                 BVP_label = (BVP_label - torch.mean(BVP_label)) / \
                             torch.std(BVP_label)  # normalize
@@ -174,6 +185,10 @@ class PhysnetTrainer(BaseTrainer):
                 batch_size = test_batch[0].shape[0]
                 data, label = test_batch[0].to(
                     self.config.DEVICE), test_batch[1].to(self.config.DEVICE)
+
+                if data.shape[1] != 3 and data.shape[2] == 3:
+                    data = data.permute(0, 2, 1, 3, 4)
+
                 pred_ppg_test, _, _, _ = self.model(data)
 
                 if self.config.TEST.OUTPUT_SAVE_DIR:

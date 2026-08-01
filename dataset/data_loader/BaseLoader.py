@@ -111,6 +111,9 @@ class BaseLoader(Dataset):
             raise ValueError('Unsupported Data Format!')
         data = np.float32(data)
         label = np.float32(label)
+        if self.dataset_name.lower() == "train":
+            # keep brightness factor constant over the clip to avoid fake temporal cues
+            data = self.apply_clip_brightness(data)
         # item_path is the location of a specific clip in a preprocessing output folder
         # For example, an item path could be /home/data/PURE_SizeW72_...unsupervised/501_input0.npy
         item_path = self.inputs[index]
@@ -126,6 +129,12 @@ class BaseLoader(Dataset):
         # the chunk_id for example would be 0
         chunk_id = item_path_filename[split_idx + 6:].split('.')[0]
         return data, label, filename, chunk_id
+
+    def apply_clip_brightness(self, clip, min_factor=0.95, max_factor=1.05):
+        """Apply a single brightness factor per clip when training to keep temporal cues clean."""
+        factor = np.random.uniform(min_factor, max_factor)
+        clip = clip * factor
+        return np.clip(clip, 0.0, 255.0)
 
     def get_raw_data(self, raw_data_path):
         """Returns raw data directories under the path.
@@ -614,7 +623,7 @@ class BaseLoader(Dataset):
         for j in range(diffnormalized_len):
             diffnormalized_data[j, :, :, :] = (data[j + 1, :, :, :] - data[j, :, :, :]) / (
                     data[j + 1, :, :, :] + data[j, :, :, :] + 1e-7)
-        diffnormalized_data = diffnormalized_data / np.std(diffnormalized_data)
+        diffnormalized_data = diffnormalized_data / (np.std(diffnormalized_data) + 1e-7)
         diffnormalized_data = np.append(diffnormalized_data, diffnormalized_data_padding, axis=0)
         diffnormalized_data[np.isnan(diffnormalized_data)] = 0
         return diffnormalized_data
@@ -623,24 +632,24 @@ class BaseLoader(Dataset):
     def diff_normalize_label(label):
         """Calculate discrete difference in labels along the time-axis and normalize by its standard deviation."""
         diff_label = np.diff(label, axis=0)
-        diffnormalized_label = diff_label / np.std(diff_label)
+        diffnormalized_label = diff_label / (np.std(diff_label) + 1e-7)
         diffnormalized_label = np.append(diffnormalized_label, np.zeros(1), axis=0)
         diffnormalized_label[np.isnan(diffnormalized_label)] = 0
         return diffnormalized_label
 
     @staticmethod
     def standardized_data(data):
-        """Z-score standardization for video data."""
-        data = data - np.mean(data)
-        data = data / np.std(data)
+        """Z-score standardization for video data, with softened centering."""
+        data = data - 0.5 * np.mean(data)
+        data = data / (np.std(data) + 1e-7)
         data[np.isnan(data)] = 0
         return data
 
     @staticmethod
     def standardized_label(label):
-        """Z-score standardization for label signal."""
-        label = label - np.mean(label)
-        label = label / np.std(label)
+        """Z-score standardization for label signal, with softened centering."""
+        label = label - 0.5 * np.mean(label)
+        label = label / (np.std(label) + 1e-7)
         label[np.isnan(label)] = 0
         return label
 

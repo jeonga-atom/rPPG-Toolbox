@@ -96,7 +96,7 @@ class UBFC_PURE_Loader(BaseLoader):
         dataset_type = data_dir["dataset_type"]
         # filename = os.path.basename(data_dir["path"])                                         # 일단 안쓰기 때문에 주석처리
         saved_filename = data_dir["index"]                                                      # 저장할 때 쓸 파일 이름
-        UBFC_ORIG_ROOT = "/home/jeonga/rPPG-Toolbox/data/UBFC-rPPG"                             # UBFC 원본 영상 경로
+        UBFC_ORIG_ROOT = "/home/pfcheon/rPPG-Toolbox/data/UBFC-rPPG"                             # UBFC 원본 영상 경로
 
         if 'Motion' in config_preprocess.DATA_AUG:
             frames = self.read_npy_video(glob.glob(os.path.join(data_dir["path"], '*.npy')))    # npy 파일로 프레임 읽기
